@@ -1,21 +1,31 @@
 # Perlin-Noiser
+
 An object dedicated to generation of Perlin Noise.
 
 ## External Specification
 
 ### Constructors
+
+PerlinNoiser(const PerlinNoiser& other);
+PerlinNoiser(PerlinNoiser&& other);
+PerlinNoiser(const sf::Vector2f& area_size, float chunk_side);
+PerlinNoiser(sf::Vector2f&& area_size, float chunk_side);
+
 Copy constructor and move constructor are available. Two others take the size of the area (either by copying from a reference of by moving a temporary rvalue) and the proposed side length of a chunk. The chunk should be more or less square-like, thus the user has to give only one side.
 
 ### Getters
 
-Two setters are available: __getAreaSize__ and __getChunkSize__. The second one returns both dimensions of the chunk size! (See _Internal Specification_ for details.)
+sf::Vector2f __getAreaSize__();
+sf::Vector2f __getChunkSize__();
+
+__getChunkSize__() returns both dimensions of the chunk! (See _Internal Specification_ for details.)
 
 ### Setters
 
 void __setValueRange__(float _lower_limit_, float _upper_limit_);
 
-Sets the range of values obtained in __generateNoise__. The initial results will be mapped to the interval \[_lower_limit_, _upper_limit_\].
-It is certain that there will be at least one final result equal to _lower_limit_ and at least one equal to _upper_limit_.
+Sets the range of values obtained in __generateNoise__.
+The initial results will be mapped to the interval \[_lower_limit_, _upper_limit_\]. It is certain that there will be at least one final result equal to _lower_limit_ and at least one equal to _upper_limit_.
 The default values are _lower_limit_ = 0.0f, _upper_limit_ = 1.0f.
 
 void __setSmoothstep__(std::function<float(float)> _new_smoothstep_);

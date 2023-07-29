@@ -18,88 +18,89 @@ Copy constructor and move constructor are available. Two others take the size of
 ### Getters
 
 ```
-sf::Vector2f __getAreaSize__();
-sf::Vector2f __getChunkSize__();
+sf::Vector2f getAreaSize();
+sf::Vector2f getChunkSize();
 ```
 
-__getChunkSize__() returns both dimensions of the chunk! (See _Internal Specification_ for details.)
+`getChunkSize()` returns both dimensions of the chunk! (See _Internal Specification_ for details.)
 
 ### Setters
 
 ```
-void __setValueRange__(float _lower_limit_, float _upper_limit_);
+void setValueRange(float lower_limit, float upper_limit);
 ```
 
-Sets the range of values obtained in __generateNoise__.
-The initial results will be mapped to the interval \[_lower_limit_, _upper_limit_\]. It is certain that there will be at least one final result equal to _lower_limit_ and at least one equal to _upper_limit_.
-The default values are _lower_limit_ = 0.0f, _upper_limit_ = 1.0f.
+Sets the range of values obtained in `generateNoise`.
+The initial results will be mapped to the interval \[`lower_limit`, `upper_limit`\]. It is certain that there will be at least one final result equal to `lower_limit` and at least one equal to `upper_limit`.
+The default values are `lower_limit` = 0.0f, `upper_limit` = 1.0f.
 
 ```
-void __setSmoothstep__(std::function<float(float)> _new_smoothstep_);
+void setSmoothstep(std::function<float(float)> new_smoothstep);
 ```
 
 Sets the smoothstep function.
 It should have the following features:
-1. it maps the interval \[_lower_limit_, _upper_limit_\] on itself (see: __setValueRange__);
-2. _new_smoothstep_(_lower_limit_) = _lower_limit_, _new_smoothstep_(_upper_limit_) = _upper_limit_;
+1. it maps the interval \[`lower_limit`, `upper_limit`\] on itself;
+2. `new_smoothstep`(`lower_limit`) = `lower_limit`, `new_smoothstep`(`upper_limit`) = `upper_limit`;
 3. the function should be increasing;
-4. derivatives: _new_smoothstep_'(_lower_limit_) = _new_smoothstep_'(_upper_limit_) = 0.
+4. derivatives: `new_smoothstep`'(`lower_limit`) = `new_smoothstep`'(`upper_limit`) = 0.
 The user is responsible for providing appropriate function. Otherwise, no problems should happen but the results will be incorrect.
 The default smoothstep function is _y_ = 3*x*² - 2*x*³, _x_ in \[0.0f, 1.0f\].
 
 ```
-void __setOctavesCount__(int _new_octaves_count_);
+void setOctavesCount(int new_octaves_count);
 ```
 
 Sets the number of octaves. It must be a positive number.
 The default value is 1.
 
 ```
-void __setLacunarity__(float _new_lacunarity_);
+void setLacunarity(float new_lacunarity);
 ```
 
 Sets the lacunarity. (The factor the frequency is multiplied by in generation of successive octaves.)
-The _new_lacunarity_ must be greater than 1.0f.
+The new lacunarity must be greater than 1.0f.
 It is equal to 2.0f by default.
 
 ```
-void __setPersistence__(float _new_persistence_);
+void setPersistence(float new_persistence);
 ```
 
 Sets the persistence. (The factor the amplitude is multiplied by in generation of successive octaves.)
-The _new_persistence_ must be from set (0.0f, 1.0f).
+The new persistence must be from set (0.0f, 1.0f).
 It is equal to 0.5f by default.
 
 ```
-void __generateNoise__(const std::vector\<sf::Vector2f>& _points_, std::vector<float>& _values_);
-void __generateNoise__(const Grid\<sf::Vector2f>& _points_, Grid<float>& _values_);
+void generateNoise(const std::vector\<sf::Vector2f>& points, std::vector<float>& values);
+void generateNoise(const Grid\<sf::Vector2f>& points, Grid<float>& values);
 ```
 
 Methods that generate the Perlin noise for given coordinates.
-The first variant works on 1-dimensional vectors, the second one on vectors of vectors. (*Grid*<*T*> is an alias for std::vector\<std::vector\<*T*>>).
-In both cases, _points_ store coordinates from the area defined on construction of the object (see: _Constructors_).
-The results are stored in _values_. Result at _values_\[_i_] refers to coordinates at _points_\[_i_] in the first variant; analogously, _values_\[_i_]\[_j_] refers to _points_\[_i_]\[_j_] in the second variant.
+The first variant works on 1-dimensional vectors, the second one on vectors of vectors. (`Grid<T>` is an alias for `std::vector<std::vector\<*T*>>`).
+In both cases, `points` store coordinates from the area defined on construction of the object (see: _Constructors_).
+The results are stored in `values`. The result at `values[_i_]` refers to coordinates at `points[i]` in the first variant; analogously, `values[i][j]` refers to `points[i][j]` in the second variant.
 
-Argument _values_ should be passed as empty. It will be cleared and recreated to provide identical structure with _points_.
+Argument `values` should be passed as empty. It will be cleared and recreated to provide identical structure with `points`.
 
 ## Internal Specification
 
-The class was designed for a greater project using SFML library. Thus, SFML classes like sf::Vector2i and sf::Vector2f are used. It should, however, be really easy to transform the code not to use SFML elements.
+The class was designed for a greater project using SFML library. Thus, SFML classes like `sf::Vector2i` and `sf::Vector2f` are used. It should, however, be really easy to transform the code not to use SFML elements.
 
 ### Properties
 
 The class has following properties:
-  - sf::Vector2f __m_area_size__;
-  - sf::Vector2f __m_chunk_size__;
-  - Grid\<sf::Vector2f> __m_gradients__;
-	- float __m_lower_limit__, __m_upper_limit__;
-	- int __m_octaves_count__;
-	- float __m_persistence__, __m_lacunarity__;
-	- std::function<float(float)> __smoothstep__.
+
+- `sf::Vector2f m_area_size`
+- `sf::Vector2f m_chunk_size`
+- `Grid\<sf::Vector2f> m_gradients`
+- `float m_lower_limit, m_upper_limit`
+- `int m_octaves_count`
+- `float m_persistence, m_lacunarity`
+- `std::function<float(float)> smoothstep`
 
 ### Construction
 
-To be created, a new object needs the real dimensions of the area to generate the noise for and the proposed side of the chunk. (Should there be any confusion, "real dimensions" are the lengths of the sides of the rectangular area, not e.g. counts of pixels. But counts of pixels times sizes of a single pixel are okay.) The size of a chunk will be adjusted to provide whole number of chunks in both dimensions, thus the actual size of a chunk can be slightly different from chunk_size times chunk_side. There is always at least one chunk.
+To be created, a new object needs the real dimensions of the area to generate the noise for and the proposed side of the chunk. (Should there be any confusion, "real dimensions" are the lengths of the sides of the rectangular area, not e.g. counts of pixels. But counts of pixels times sizes of a single pixel are okay.) The size of a chunk will be adjusted to provide whole number of chunks in both dimensions, thus the actual size of a chunk can be slightly different from `chunk_size` times `chunk_side`. There is always at least one chunk.
 
 On construction, the grid of gradient vectors is generated.
 
@@ -109,19 +110,19 @@ On construction, the grid of gradient vectors is generated.
 sf::Vector2i findChunk(const sf::Vector2f& point);
 ```
 
-Determines the indexes of the chunk within which _point_ coordinates fall. The indexes are the coordinates devided by chunk sizes, rounded towards minus infinity (_std::floor_).
+Determines the indexes of the chunk within which `point` coordinates fall. The indexes are the coordinates devided by chunk sizes, rounded towards minus infinity (`std::floor`).
 
-Since it is ***not*** checked if _point_ belongs to the area, the indexes might indicate a non-existing chunk. The method must be provided with legal input to produce a legal output.
+Since it is ***not*** checked if `point` belongs to the area at all, the indexes might indicate a non-existing chunk. The method must be provided with legal input to produce a legal output.
 
 ```
 float lerp(float v1, float v2, float w);
 ```
 
-Linear interpolation between values _v1_ and _v2_, with weight _w_. The returned value is _v1_ + _w_ * (_v2_ - _v1_).
+Linear interpolation between values `v1` and `v2`, with weight `w`. The returned value is `v1` + `w` * (`v2` - `v1`).
 
 ```
 void roll_back(sf::Vector2f& point, const sf::Vector2f& dimensions);
 ```
 
-Modifies the coordinates in _point_ by replacing them with remainders from division by the dimensions of the area. Function `std::fmod` is used.
+Modifies the coordinates in `point` by replacing them with remainders from division by the dimensions of the area. Function `std::fmod` is used.
 

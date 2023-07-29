@@ -6,16 +6,16 @@ An object dedicated to generation of Perlin Noise.
 
 ### Constructors
 
-PerlinNoiser(const PerlinNoiser& other);
-PerlinNoiser(PerlinNoiser&& other);
-PerlinNoiser(const sf::Vector2f& area_size, float chunk_side);
+PerlinNoiser(const PerlinNoiser& other);  
+PerlinNoiser(PerlinNoiser&& other);  
+PerlinNoiser(const sf::Vector2f& area_size, float chunk_side);  
 PerlinNoiser(sf::Vector2f&& area_size, float chunk_side);
 
 Copy constructor and move constructor are available. Two others take the size of the area (either by copying from a reference of by moving a temporary rvalue) and the proposed side length of a chunk. The chunk should be more or less square-like, thus the user has to give only one side.
 
 ### Getters
 
-sf::Vector2f __getAreaSize__();
+sf::Vector2f __getAreaSize__();  
 sf::Vector2f __getChunkSize__();
 
 __getChunkSize__() returns both dimensions of the chunk! (See _Internal Specification_ for details.)

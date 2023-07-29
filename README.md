@@ -7,11 +7,8 @@ An object dedicated to generation of Perlin Noise.
 ### Constructors
 
 PerlinNoiser(const PerlinNoiser& other);
-
 PerlinNoiser(PerlinNoiser&& other);
-
 PerlinNoiser(const sf::Vector2f& area_size, float chunk_side);
-
 PerlinNoiser(sf::Vector2f&& area_size, float chunk_side);
 
 Copy constructor and move constructor are available. Two others take the size of the area (either by copying from a reference of by moving a temporary rvalue) and the proposed side length of a chunk. The chunk should be more or less square-like, thus the user has to give only one side.
@@ -19,7 +16,6 @@ Copy constructor and move constructor are available. Two others take the size of
 ### Getters
 
 sf::Vector2f __getAreaSize__();
-
 sf::Vector2f __getChunkSize__();
 
 __getChunkSize__() returns both dimensions of the chunk! (See _Internal Specification_ for details.)
@@ -41,7 +37,7 @@ It should have the following features:
 3. the function should be increasing;
 4. derivatives: _new_smoothstep_'(_lower_limit_) = _new_smoothstep_'(_upper_limit_) = 0.
 The user is responsible for providing appropriate function. Otherwise, no problems should happen but the results will be incorrect.
-The default smoothstep function is _y_ = 3*x*^2 - 2*x*^3, _x_ in \[0.0f, 1.0f\].
+The default smoothstep function is _y_ = 3*x*² - 2*x*³, _x_ in \[0.0f, 1.0f\].
 
 void __setOctavesCount__(int _new_octaves_count_);
 

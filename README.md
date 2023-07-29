@@ -44,6 +44,7 @@ It should have the following features:
 2. `new_smoothstep`(`lower_limit`) = `lower_limit`, `new_smoothstep`(`upper_limit`) = `upper_limit`;
 3. the function should be increasing;
 4. derivatives: `new_smoothstep`'(`lower_limit`) = `new_smoothstep`'(`upper_limit`) = 0.
+
 The user is responsible for providing appropriate function. Otherwise, no problems should happen but the results will be incorrect.
 The default smoothstep function is _y_ = 3*x*² - 2*x*³, _x_ in \[0.0f, 1.0f\].
 
@@ -106,6 +107,8 @@ On construction, the grid of gradient vectors is generated.
 
 ### Auxiliary private methods used in generation
 
+Those methods are declared `inline`.
+
 ```
 sf::Vector2i findChunk(const sf::Vector2f& point);
 ```
@@ -125,4 +128,20 @@ void roll_back(sf::Vector2f& point, const sf::Vector2f& dimensions);
 ```
 
 Modifies the coordinates in `point` by replacing them with remainders from division by the dimensions of the area. Function `std::fmod` is used.
+
+```
+float dotProduct(const sf::Vector2f& u, const sf::Vector2f& v);
+```
+
+Computes the dot product of vectors `u` and `v`.
+
+```
+float calculateNoise(sf::Vector2f coords);
+```
+
+Calculates the noise for particular coordinates (`coords`).
+
+This is done by determining: the chunk the point belongs to, four gradient vectors in the corners of the chunk, and the offset vectors. The offset vectors are fractional coordinates of the point in the chunk, relatively to the chunk sizes. The begin in the corners and end in the point.
+
+The dot products are calculated and linear interpolation is done, and the result is returned.
 
